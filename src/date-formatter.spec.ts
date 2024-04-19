@@ -1,5 +1,5 @@
 import {it,test,describe,expect} from 'vitest';
-import {formatDate} from './date-formatter.js';
+import { formatDate } from './date-formatter.js';
 
 describe('date-formatter',()=>{
 
