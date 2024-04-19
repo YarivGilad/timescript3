@@ -1,0 +1,30 @@
+#  .github/workflows/npm-publish.yml 
+
+name: Publish a Node.js Package to the NPM registry
+
+# Trigger this workflow whenever a new PR is closed on the main branch
+on:
+    # Allows you to trigger this workflow manually from the Actions tab
+    workflow_dispatch:
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: 'yarn'
+                registry-url: https://registry.npmjs.org/
+
+            - name: Download build artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ts-build
+                path: dist/
+
+            - run: |
+                npm publish --access public
+              env:
+                NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
