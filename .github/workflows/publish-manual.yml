@@ -18,11 +18,18 @@ jobs:
                 cache: 'yarn'
                 registry-url: https://registry.npmjs.org/
 
+            # - name: Download build artifact
+            #   uses: actions/download-artifact@v4
+            #   with:
+            #     name: ts-build
+            #     path: dist/
+
             - name: Download build artifact
               uses: actions/download-artifact@v4
               with:
-                name: ts-build
-                path: dist/
+                  name: my_artifact
+                  run-id: ${{ github.event.workflow_run.id }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
 
             - run: |
                 npm publish --access public
