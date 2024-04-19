@@ -24,20 +24,23 @@ jobs:
             #     name: ts-build
             #     path: dist/
 
-            - name: Download build artifact
-              uses: actions/download-artifact@v4
-              with:
-                  name: ts-build
-                  run-id: ${{ github.event.workflow_run.id }}
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  
             # - name: Download build artifact
             #   uses: actions/download-artifact@v4
             #   with:
-            #     name: ts-build
-            #     github-token: ${{ secrets.GITHUB_TOKEN }} # token with actions:read permissions on target repo
-            #     repository: YarivGilad/timescript3
-            #     run-id: 8
+            #       name: ts-build
+            #       run-id: ${{ github.event.workflow_run.id }}
+            #       github-token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Log workflow_run.id 
+              run: echo '${{ toJSON(github.event) }}' 
+              shell: bash
+            
+            - name: Download build artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ts-build
+                github-token: ${{ secrets.GITHUB_TOKEN }} # token with actions:read permissions on target repo
+                repository: YarivGilad/timescript3
+                run-id: 10
 
             - run: |
                 npm publish --access public
