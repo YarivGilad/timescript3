@@ -17,41 +17,19 @@ jobs:
                 node-version: 20
                 cache: 'yarn'
                 registry-url: https://registry.npmjs.org/
-
-            # - name: Download build artifact
-            #   uses: actions/download-artifact@v4
-            #   with:
-            #     name: ts-build
-            #     path: dist/
-
-            # - name: Download build artifact
-            #   uses: actions/download-artifact@v4
-            #   with:
-            #       name: ts-build
-            #       run-id: ${{ github.event.workflow_run.id }}
-            #       github-token: ${{ secrets.GITHUB_TOKEN }}
-            - name: Get latest workflow run number
-              run: |
-                LATEST_RUN=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                -H "Accept: application/vnd.github.v3+json" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=1" \
-                | jq '.workflow_runs[0].run_number')
-                echo "The latest workflow run number is $LATEST_RUN"
-
-            - name: Log workflow_run.id 
-              run: |
-                echo 'LATEST_RUN: ${ LATEST_RUN }' 
-                echo '${{ toJSON(github.event) }}' 
-              shell: bash
             
-            - name: Download build artifact
-              uses: actions/download-artifact@v4
-              with:
-                name: ts-build
-                github-token: ${{ secrets.GITHUB_TOKEN }} # token with actions:read permissions on target repo
-                repository: YarivGilad/timescript3
-                run-id: LATEST_RUN
-
+            - name: Fetch the latest artifact
+              run: |
+                  ARTIFACT_URL=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                    "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" \
+                    | jq -r '.artifacts[0].archive_download_url')
+                  echo "Artifact URL: $ARTIFACT_URL"
+          
+            - name: Download and extract artifact
+              run: |
+                  curl -L -o artifact.zip -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $ARTIFACT_URL
+                  unzip artifact.zip -d dist/
+                           
             - run: |
                 npm publish --access public
               env:
