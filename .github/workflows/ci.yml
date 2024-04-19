@@ -18,10 +18,22 @@ jobs:
     test:
         name: 'Run unit tests'
         runs-on: ubuntu-latest
+
+        strategy:
+          matrix:
+            # Define multiple Node.js versions here
+            node-version: [18.x, 20.x] 
+
         steps:
             - uses: actions/checkout@v4
               name: 'Checkout repository'
 
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: ${{ matrix.node-version }}
+                cache: 'yarn'
+            
             - name: 'Install Dependencies'
               run: yarn
 
@@ -29,11 +41,23 @@ jobs:
               run: yarn test
     lint:                                     
         name: 'Run linter'                    
-        runs-on: ubuntu-latest                
+        runs-on: ubuntu-latest 
+
+        strategy:
+          matrix:
+            # Define multiple Node.js versions here
+            node-version: [18.x, 20.x] 
+
         steps:                                
             - uses: actions/checkout@v4       
               name: 'Checkout repository'     
-                                              
+            
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: ${{ matrix.node-version }}
+                cache: 'yarn'
+
             - name: 'Install Dependencies'    
               run: yarn                     
                                               
