@@ -39,7 +39,9 @@ jobs:
                 echo "The latest workflow run number is $LATEST_RUN"
 
             - name: Log workflow_run.id 
-              run: echo '${{ toJSON(github.event) }}' 
+              run: |
+                echo 'LATEST_RUN: ${ LATEST_RUN }' 
+                echo '${{ toJSON(github.event) }}' 
               shell: bash
             
             - name: Download build artifact
@@ -48,7 +50,7 @@ jobs:
                 name: ts-build
                 github-token: ${{ secrets.GITHUB_TOKEN }} # token with actions:read permissions on target repo
                 repository: YarivGilad/timescript3
-                run-id: 10
+                run-id: LATEST_RUN
 
             - run: |
                 npm publish --access public
